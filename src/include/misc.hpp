@@ -13,31 +13,14 @@
  * along with Onur. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <format>
+#pragma once
+
+#include <optional>
 #include <string>
 
-#include "../include/actions.hpp"
-
-using std::format;
-using std::string;
-using std::system;
-using std::filesystem::path;
-
-Actions::Actions () {}
-
-auto
-Actions::klone (Project project, path dirpath) -> void
+struct ConfigEntries
 {
-  auto finalCommand{ format (
-      "git clone --single-branch --depth=1 --quiet {} {}", project.Url (),
-      dirpath.string ()) };
-  system (finalCommand.c_str ());
-}
-
-auto
-Actions::pull (path dirpath) -> void
-{
-  auto finalCommand{ format ("git -C {}  pull --quiet", dirpath.string ()) };
-  system (finalCommand.c_str ());
-}
+  std::optional<std::string> name;
+  std::optional<std::string> url;
+  std::string branch{ "master" };
+};

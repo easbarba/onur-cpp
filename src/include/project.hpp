@@ -15,15 +15,47 @@
 
 #pragma once
 
+#include "misc.hpp"
 #include <string>
+
+#include <nlohmann/json.hpp>
 
 class Project
 {
+  std::string name;
+  std::string url;
+  std::string branch;
+
 public:
   Project (std::string name, std::string url, std::string branch)
       : name (name), url (url), branch (branch) {};
 
-  std::string name;
-  std::string url;
-  std::string branch;
+  Project (ConfigEntries entries)
+      : name (entries.name.value ()), url (entries.url.value ()),
+        branch (entries.branch) {};
+
+  std::string
+  Name ()
+  {
+    return name;
+  }
+
+  std::string
+  Url ()
+  {
+    return url;
+  }
+  std::string
+  Branch ()
+  {
+    return branch;
+  }
+
+  void
+  to_json (nlohmann::json &j, const Project &p)
+  {
+    j = nlohmann::json{ { "name", p.name },
+                        { "url", p.url },
+                        { "branch", p.branch } };
+  }
 };

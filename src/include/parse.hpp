@@ -21,6 +21,7 @@
 #include <nlohmann/json.hpp>
 
 #include "konfig.hpp"
+#include "misc.hpp"
 #include "repository.hpp"
 
 class Parse
@@ -34,4 +35,8 @@ public:
   auto single (std::filesystem::path filepath) -> Konfig;
   auto parse_file (std::string jsonString) -> nlohmann::basic_json<>;
   auto contents_of (std::string path_to_file) -> std::string;
+  auto exist (std::string name) -> bool;
+  auto dump () -> void;
+  auto save (std::string name, std::string topic,
+             ConfigEntries entries) -> void;
 };

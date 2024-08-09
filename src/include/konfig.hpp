@@ -18,6 +18,8 @@
 #include <list>
 #include <map>
 
+#include <nlohmann/json.hpp>
+
 #include "project.hpp"
 
 class Konfig
@@ -25,6 +27,15 @@ class Konfig
 public:
   Konfig ();
 
-  std::string topic;
-  std::map<std::string, std::list<Project> > subtopics;
+  Konfig (std::string name, std::map<std::string, std::list<Project>> topics)
+      : name (name), topics (topics) {};
+
+  std::string name;
+  std::map<std::string, std::list<Project>> topics;
+
+  void
+  to_json (nlohmann::json &j, const Konfig &k)
+  {
+    j = nlohmann::json { { "name", k.name }, { "topics", k.topics } };
+  }
 };

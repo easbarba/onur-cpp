@@ -28,6 +28,7 @@ Easily manage multiple FLOSS repositories.
 ```shell
 onur grab
 onur backup nuxt awesomewm gitignore
+onur config c.misc cli11 https://github.com/cliutils/cli11 main
 onur --help
 ```
 

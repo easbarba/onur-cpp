@@ -14,12 +14,14 @@
  */
 
 #include <filesystem>
+#include <format>
 #include <iostream>
 #include <ostream>
+#include <string>
 
 #include "../include/commands.hpp"
 #include "../include/globals.hpp"
-#include "helpers.hpp"
+#include "../include/helpers.hpp"
 
 using std::cout;
 using std::endl;
@@ -31,25 +33,24 @@ Commands::Commands () {}
 auto
 Commands::grab (void) -> void
 {
-  for (auto single : parse.multi ())
+  for (auto singleConfig : parse.multi ())
     {
-      cout << "\n " << single.topic << ":" << endl;
+      cout << "\n " << singleConfig.name << ":" << endl;
 
-      for (auto subtopic : single.subtopics)
+      for (auto topic : singleConfig.topics)
         {
-          cout << "  + " << subtopic.first << endl;
-          for (auto project : subtopic.second)
+          cout << "  + " << topic.first << endl;
+          for (auto project : topic.second)
             {
-              auto placeholder{ path (globals.projectsDir / single.topic
-                                      / subtopic.first / project.name) };
-              auto dirpath{ placeholder };
+              auto finalpath{ path (globals.projectsDir / singleConfig.name
+                                    / topic.first / project.Name ()) };
 
               printProjectInfo (project);
 
-              if (exists (dirpath / ".git" / "config"))
-                actions.pull (dirpath);
+              if (exists (finalpath / ".git" / "config"))
+                actions.pull (finalpath);
               else
-                actions.klone (project, dirpath);
+                actions.klone (project, finalpath);
             }
 
           cout << endl;
@@ -61,4 +62,58 @@ auto
 Commands::backup (void) -> void
 {
   cout << "Backing up" << endl;
+}
+
+auto
+Commands::config (std::string name, ConfigEntries entries) -> void
+{
+  std::string _name{ name };
+  std::optional<std::string> _topic;
+
+  if (name.contains ("."))
+    {
+      std::size_t dot_positon{ name.find (".") };
+      _name = { name.substr (0, dot_positon) };
+      _topic = { name.substr (dot_positon + 1) };
+    }
+
+  if (_topic.has_value ())
+    parse.save (_name, _topic.value (), entries);
+
+  // if (!parse.exist (_name))
+  //   {
+  //     if (!_topic.has_value ())
+  //       {
+  //         cout << "Provide a topic, exiting!";
+  //       }
+
+  //     cout << std::format ("Config does not exists: {}, imma creating it!",
+  //                          name);
+
+  //     parse.save (_name, _topic.value (), entries);
+
+  //     return;
+  //   }
+
+  for (auto singleConfig : parse.multi ())
+    {
+      if (_name == singleConfig.name)
+        {
+          cout << "\n" << singleConfig.name << ":" << endl;
+          for (auto topic : singleConfig.topics)
+            {
+              if (_topic.has_value () && _topic.value () != topic.first)
+                continue;
+
+              cout << " + " << topic.first << endl;
+
+              for (auto project : topic.second)
+                printProjectInfo (project);
+            }
+        }
+
+      std::string m{ std::format ("{} {} {} {}", name,
+                                  entries.name.has_value (),
+                                  entries.url.has_value (), entries.branch) };
+    }
 }

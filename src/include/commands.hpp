@@ -17,8 +17,8 @@
 
 #include "actions.hpp"
 #include "globals.hpp"
+#include "misc.hpp"
 #include "parse.hpp"
-#include "project.hpp"
 
 class Commands
 {
@@ -31,4 +31,5 @@ public:
 
   auto grab (void) -> void;
   auto backup (void) -> void;
+  auto config (std::string name, ConfigEntries edit) -> void;
 };

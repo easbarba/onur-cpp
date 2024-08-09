@@ -32,7 +32,7 @@ Repository::allConfigs (void) -> list<path>
   list<path> result;
   Globals globals;
 
-  printf (" Configurations: [");
+  printf ("Configurations: [");
 
   for (auto config : directory_iterator (globals.onurDir))
     {

@@ -27,14 +27,15 @@ printProjectInfo (Project project) -> void
 {
   std::string::size_type nameLength = 27;
   auto nameTruncated
-      = project.name.length () <= nameLength
-            ? project.name
-            : project.name.substr (0, nameLength).append ("...");
+      = project.Name ().length () <= nameLength
+            ? project.Name ()
+            : project.Name ().substr (0, nameLength).append ("...");
   std::string::size_type urlLength = 60;
-  auto urlTruncated = project.url.length () <= urlLength
-                          ? project.url
-                          : project.url.substr (0, urlLength).append ("...");
-  auto message{ format ("{:5}- {:35} {:75} {}", "", nameTruncated,
-                        urlTruncated, project.branch) };
+  auto urlTruncated
+      = project.Url ().length () <= urlLength
+            ? project.Url ()
+            : project.Url ().substr (0, urlLength).append ("...");
+  auto message{ format ("{:3}- {:35} {:75} {}", "", nameTruncated,
+                        urlTruncated, project.Branch ()) };
   cout << message << endl;
 }
